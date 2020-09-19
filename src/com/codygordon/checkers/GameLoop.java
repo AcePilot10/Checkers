@@ -11,7 +11,6 @@ public class GameLoop extends Thread {
 		double ns = 1000000000 / amountOfTicks;
 		double delta = 0;
 		long timer = System.currentTimeMillis();
-//		int frames = 0;'
 		while (isRunning) {
 			long now = System.nanoTime();
 			delta += (now - lastTime) / ns;
@@ -21,11 +20,9 @@ public class GameLoop extends Thread {
 				delta--;
 			}
 			render();
-//			frames++;
 
 			if (System.currentTimeMillis() - timer > 1000) {
 				timer += 1000;
-//				frames = 0;
 			}
 		}
 	}

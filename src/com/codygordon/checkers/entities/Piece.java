@@ -3,6 +3,7 @@ package com.codygordon.checkers.entities;
 import java.awt.Color;
 import java.awt.Graphics;
 
+import com.codygordon.checkers.GameController;
 import com.codygordon.checkers.Settings;
 import com.codygordon.checkers.ui.BoardSpot;
 
@@ -19,17 +20,25 @@ public class Piece {
 	
 	public void paint(Graphics g, BoardSpot spot) {
 		int size = Settings.PIECE_SIZE;
-		int x =(spot.getWidth() - size) / 2;
+		int scaleFactorWidth = GameController.getInstance().getFrame().getWidth() / Settings.DEFAULT_WIDTH;
+		int scaleFactorHeight = GameController.getInstance().getFrame().getHeight() / Settings.DEFAULT_HEIGHT;
+		int x = (spot.getWidth() - size) / 2;
 		int y = (spot.getHeight() - size) / 2;
 		g.setColor(color);
-		g.fillOval(x, y, size, size);
+		
+		x -= ((size * scaleFactorWidth) - size) / 2;
+		y -= ((size * scaleFactorHeight) - size) / 2;
+	
+		g.fillOval(x, y, size * scaleFactorWidth, size * scaleFactorHeight);
 		
 		if(isKinged) {
-			size = Settings.PIECE_SIZE / 2;
-			x =(spot.getWidth() - size) / 2;
+			size /= 2;
+			x = (spot.getWidth() - size) / 2;
 			y = (spot.getHeight() - size) / 2;
+			x -= ((size * scaleFactorWidth) - size) / 2;
+			y -= ((size * scaleFactorHeight) - size) / 2;
 			g.setColor(Color.BLUE);
-			g.fillOval(x, y, size, size);
+			g.fillOval(x, y, size * scaleFactorWidth, size * scaleFactorHeight);
 		}
 	}
 	

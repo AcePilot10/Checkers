@@ -22,7 +22,6 @@ public class BoardSpot extends JPanel {
 	
 	public BoardSpot(Color color) {
 		setBackground(color);
-		setVisible(true);
 		addMouseListener(new MouseListener() {
 
 			@Override
@@ -52,6 +51,7 @@ public class BoardSpot extends JPanel {
 				mouseIsOnPanel = false;
 			}
 		});
+		setVisible(true);
 	}
 	
 	private void mouseClickedSpot() {

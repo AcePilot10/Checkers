@@ -13,14 +13,15 @@ public class GameController {
 
 	private Board board;
 	private GameFrame frame;
-	private ArrayList<Piece> pieces = new ArrayList<Piece>();
+	private ArrayList<Piece> pieces;
 	private GameLoop loop;
 	private BoardSpot currentMoveSelection;
 
 	private static GameController instance;
-	
+
 	private int redScore = 0;
 	private int blackScore = 0;
+	private Color currentPlayer = Color.RED;
 
 	private GameController() {
 	}
@@ -33,31 +34,34 @@ public class GameController {
 	}
 
 	public void startGame() {
+		pieces = new ArrayList<Piece>();
 		frame = new GameFrame();
 		board = new Board();
 		frame.add(board);
 		initBoard();
+		frame.pack();
+		frame.setVisible(true);
 		loop = new GameLoop();
 		loop.run();
 	}
 
 	private void initBoard() {
 		// red team
-		for(int row = 5; row <= 7; row++) {
-			for(int col = 0; col < 8; col += 2) {
-				if(row == 6 && col == 0)
+		for (int row = 5; row <= 7; row++) {
+			for (int col = 0; col < 8; col += 2) {
+				if (row == 6 && col == 0)
 					col = 1;
 				Piece piece = new Piece(Color.RED);
 				pieces.add(piece);
 				board.getBoardSpot(row, col).setPiece(piece);
 			}
 		}
-		
-		//black team
-		for(int row = 0; row <= 2; row++) {
-			for(int col = 0; col < 8; col+= 2) {
-				if(row == 0 || row == 2) {
-					if(col == 0) {
+
+		// black team
+		for (int row = 0; row <= 2; row++) {
+			for (int col = 0; col < 8; col += 2) {
+				if (row == 0 || row == 2) {
+					if (col == 0) {
 						col = 1;
 					}
 				}
@@ -69,6 +73,7 @@ public class GameController {
 	}
 
 	public void update() {
+		frame.repaint();
 		board.repaint();
 	}
 
@@ -89,30 +94,75 @@ public class GameController {
 	}
 
 	public void spotSelected(BoardSpot spot) {
-		clearBorders();
-		spot.addBorder();
 		// TODO check if it's the players team
-		if (currentMoveSelection == null) {
-			if (spot.hasPiece()) {
-				currentMoveSelection = spot;
+		if (spot.hasPiece()) {
+			if (spot.getPiece().getColor() == currentPlayer) {
+				selectSpot(spot);
+				clearBorders();
+				spot.addBorder();
 				System.out.println("Spot selected");
 			}
+
+		} else if (!spot.hasPiece() && currentMoveSelection != null) {
+			MoveHelper.doMove(currentMoveSelection, spot);
 		}
-		else if(!spot.hasPiece()) {
-			System.out.println("Piece moved");
-			if(MoveHelper.moveIsValid(currentMoveSelection, spot)) {
-				spot.setPiece(currentMoveSelection.getPiece());
-				if(MoveHelper.pieceShouldBeKinged(spot)) {
-					currentMoveSelection.getPiece().king();
-				}
-				currentMoveSelection.removePiece();
-				currentMoveSelection = null;
-				clearBorders();
-			} else {
-				System.out.println("Move was invalid");
+	}
+
+	public void selectSpot(BoardSpot spot) {
+		currentMoveSelection = spot;
+	}
+
+	public void jumpPiece(Piece pieceToJump, Piece jumpingPiece) {
+		board.forEachSpot((spot) -> {
+			if (spot.getPiece() == pieceToJump) {
+				spot.removePiece();
 			}
+		});
+
+		pieces.remove(pieceToJump);
+
+		if (jumpingPiece.getColor() == Color.RED) {
+			redScore++;
+			getFrame().updateRedScore(redScore);
 		} else {
-			currentMoveSelection = null;
+			blackScore++;
+			getFrame().updateBlackScore(blackScore);
 		}
+		System.out.println("Current Score");
+		System.out.println("Red: " + redScore);
+		System.out.println("Black: " + blackScore);
+		checkForEndOfGame();
+	}
+
+	private void checkForEndOfGame() {
+		int redPieces = 0;
+		int bluePieces = 0;
+		for (Piece piece : pieces) {
+			if (piece.getColor() == Color.RED)
+				redPieces++;
+			else
+				bluePieces++;
+		}
+		if (redPieces == 0) {
+			getFrame().gameOver(Color.BLACK);
+		} else if (bluePieces == 0) {
+			getFrame().gameOver(Color.RED);
+		}
+	}
+
+	public void swapCurrentPlayer() {
+		if (currentPlayer == Color.RED) {
+			currentPlayer = Color.BLACK;
+		} else {
+			currentPlayer = Color.RED;
+		}
+		frame.updateCurrentTeamText(currentPlayer);
+	}
+
+	public void movePiece(BoardSpot to) {
+		to.setPiece(currentMoveSelection.getPiece());
+		currentMoveSelection.removePiece();
+		currentMoveSelection = null;
+		clearBorders();
 	}
 }

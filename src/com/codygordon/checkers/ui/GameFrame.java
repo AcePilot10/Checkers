@@ -1,18 +1,87 @@
 package com.codygordon.checkers.ui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
+import com.codygordon.checkers.Settings;
+import java.awt.Font;
 
 public class GameFrame extends JFrame {
 
 	private static final long serialVersionUID = -4055139307267640840L;
-	
+
+	private JLabel lblScoreRed, lblScoreBlack;
+	private JLabel lblCurrentTeam;
+	private JPanel panel;
+
 	public GameFrame() {
-		setSize(500, 500);
+		setSize(Settings.DEFAULT_WIDTH, Settings.DEFAULT_HEIGHT);
 		setTitle("Checkers");
-		setBackground(Color.GREEN);
+		getContentPane().setLayout(new BorderLayout());
+
+		JPanel panelInfo = new JPanel();
+		getContentPane().add(panelInfo, BorderLayout.NORTH);
+		panelInfo.setLayout(new BorderLayout(0, 0));
+		
+		panel = new JPanel();
+		panelInfo.add(panel, BorderLayout.EAST);
+		
+				lblScoreRed = new JLabel("Red: 0");
+				panel.add(lblScoreRed);
+				lblScoreRed.setHorizontalAlignment(SwingConstants.LEFT);
+
+		lblScoreBlack = new JLabel("Black: 0");
+		panel.add(lblScoreBlack);
+		
+		lblCurrentTeam = new JLabel("Current Team: Red");
+		panelInfo.add(lblCurrentTeam, BorderLayout.CENTER);
+		lblCurrentTeam.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblCurrentTeam.setBackground(Color.GRAY);
+        setMinimumSize(new Dimension(Settings.DEFAULT_WIDTH, Settings.DEFAULT_HEIGHT));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setVisible(true);
+	}
+	
+	public void updateRedScore(int score) {
+		lblScoreRed.setText("Red Score: " + score);
+	}
+	
+	public void updateBlackScore(int score) {
+		lblScoreBlack.setText("Black Score: " + score);
+	}
+	
+	public void gameOver(Color winner) {
+		String resultText;
+		if(winner == Color.RED) {
+			resultText = "red"; 
+		} else {
+			resultText = "black";
+		}
+		int result = JOptionPane.showConfirmDialog(this,
+				resultText + " has won the game! Thanks for playing!",
+				"Game Over!",
+				JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE);
+		if(result == JOptionPane.OK_OPTION) {
+			System.exit(1);
+		}
+	}
+	
+	public void updateCurrentTeamText(Color currentTeam) {
+		if(currentTeam == Color.RED) {
+			lblCurrentTeam.setText("Current Team: Red" );
+		} else {
+			lblCurrentTeam.setText("Current Team: Black" );
+		}
+	}
+
+	@Override
+	public Dimension getPreferredSize() {
+		return new Dimension(Settings.DEFAULT_WIDTH, Settings.DEFAULT_HEIGHT);
 	}
 }
