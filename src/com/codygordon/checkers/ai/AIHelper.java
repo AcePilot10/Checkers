@@ -12,7 +12,7 @@ import com.codygordon.checkers.util.CanJumpResult;
 import com.codygordon.checkers.util.CanMoveResult;
 
 public class AIHelper {
-	
+
 	public static CanMoveResult findPieceToMove() {
 		ArrayList<BoardSpot> blackSpots = getBlackSpots();
 		HashMap<BoardSpot, CanJumpResult> spotsThatCanJump = new HashMap<>();
@@ -36,7 +36,7 @@ public class AIHelper {
 		// if not move random piece once
 		if (!spotsThatCanJump.isEmpty()) {
 			int shouldJump = new Random().nextInt(100);
-			if (shouldJump > 90) {
+			if (shouldJump < 90 || spotsThatCanMoveOnce.isEmpty()) {
 				// Do jump and return
 				CanJumpResult result = (CanJumpResult) spotsThatCanJump.values().toArray()[0];
 				return result;
@@ -51,7 +51,7 @@ public class AIHelper {
 		// BoardSpot[] spotsToMove =
 		// (BoardSpot[])spotsThatCanMoveOnce.keySet().toArray();
 		int shouldFavorFarthestPiece = new Random().nextInt(100);
-		if (shouldFavorFarthestPiece > 50) {
+		if (shouldFavorFarthestPiece > 50 && !spotsToMove.isEmpty()) {
 			// pick farthest piece and move then return
 			BoardSpot spotToMove = getSpotFarthestAway(spotsToMove);
 			CanMoveOnceResult result = spotsThatCanMoveOnce.get(spotToMove);
@@ -241,7 +241,7 @@ public class AIHelper {
 				targetY = fromY + 1;
 				if (fromY <= 5) {
 					// look left
-					if (fromX >= 2) {
+					if (fromX >= 1) {
 						targetX = fromX - 1;
 						targetSpot = GameController.getInstance().getBoard().getBoardSpot(targetY, targetX);
 						if (!targetSpot.hasPiece()) {
@@ -265,9 +265,9 @@ public class AIHelper {
 
 				// look up
 				targetY = fromY - 1;
-				if (fromY >= 2) {
+				if (fromY > 0) {
 					// look left
-					if (fromX >= 2) {
+					if (fromX >= 1) {
 						targetX = fromX - 1;
 						targetSpot = GameController.getInstance().getBoard().getBoardSpot(targetY, targetX);
 						if (!targetSpot.hasPiece()) {

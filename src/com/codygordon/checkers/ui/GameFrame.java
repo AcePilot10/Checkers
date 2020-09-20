@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import com.codygordon.checkers.GameController;
 import com.codygordon.checkers.Settings;
 import java.awt.Font;
 
@@ -30,55 +31,59 @@ public class GameFrame extends JFrame {
 		panelInfo = new JPanel();
 		getContentPane().add(panelInfo, BorderLayout.NORTH);
 		panelInfo.setLayout(new BorderLayout(0, 0));
-		
+
 		scorePanel = new JPanel();
 		panelInfo.add(scorePanel, BorderLayout.EAST);
-		
-				lblScoreRed = new JLabel("Red: 0");
-				scorePanel.add(lblScoreRed);
-				lblScoreRed.setHorizontalAlignment(SwingConstants.LEFT);
+
+		lblScoreRed = new JLabel("Red: 0");
+		scorePanel.add(lblScoreRed);
+		lblScoreRed.setHorizontalAlignment(SwingConstants.LEFT);
 
 		lblScoreBlack = new JLabel("Black: 0");
 		scorePanel.add(lblScoreBlack);
-		
+
 		lblCurrentTeam = new JLabel("Current Team: Red");
 		panelInfo.add(lblCurrentTeam, BorderLayout.CENTER);
 		panelInfo.setVisible(false);
 		lblCurrentTeam.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		lblCurrentTeam.setBackground(Color.GRAY);
-        setMinimumSize(new Dimension(Settings.DEFAULT_WIDTH, Settings.DEFAULT_HEIGHT));
+		setMinimumSize(new Dimension(Settings.DEFAULT_WIDTH, Settings.DEFAULT_HEIGHT));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
-	
+
 	public void updateRedScore(int score) {
 		lblScoreRed.setText("Red Score: " + score);
 	}
-	
+
 	public void updateBlackScore(int score) {
 		lblScoreBlack.setText("Black Score: " + score);
 	}
-	
+
 	public void gameOver(Color winner) {
 		String resultText;
-		if(winner == Color.RED) {
-			resultText = "red"; 
+		if (winner == Color.RED) {
+			resultText = "red";
 		} else {
 			resultText = "black";
 		}
-		int result = JOptionPane.showOptionDialog(this,
-				resultText + " has won the game! Thanks for playing!",
-				"Game Over!",
-				JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-		if(result == JOptionPane.OK_OPTION) {
+		int result = JOptionPane.showOptionDialog(this, resultText + " has won the game! Thanks for playing!",
+				"Game Over!", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+		if (result == JOptionPane.OK_OPTION) {
 			System.exit(1);
 		}
 	}
 	
+	public void setCurrentTeamText(String text) {
+		lblCurrentTeam.setText(text);
+	}
+
 	public void updateCurrentTeamText(Color currentTeam) {
-		if(currentTeam == Color.RED) {
-			lblCurrentTeam.setText("Current Team: Red" );
+		if(GameController.getInstance().isSingleplayer())
+			return;
+		if (currentTeam == Color.RED) {
+			lblCurrentTeam.setText("Current Team: Red");
 		} else {
-			lblCurrentTeam.setText("Current Team: Black" );
+			lblCurrentTeam.setText("Current Team: Black");
 		}
 	}
 
@@ -86,8 +91,8 @@ public class GameFrame extends JFrame {
 	public Dimension getPreferredSize() {
 		return new Dimension(Settings.DEFAULT_WIDTH, Settings.DEFAULT_HEIGHT);
 	}
-	
-	public JPanel getScorePanel() {
-		return scorePanel;
+
+	public JPanel getInfoPanel() {
+		return panelInfo;
 	}
 }

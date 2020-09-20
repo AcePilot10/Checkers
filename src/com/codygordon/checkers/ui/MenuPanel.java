@@ -33,5 +33,4 @@ public class MenuPanel extends JPanel {
 		add(btnMultiplayer);
 
 	}
-
 }

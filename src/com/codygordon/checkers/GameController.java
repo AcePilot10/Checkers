@@ -19,7 +19,6 @@ public class GameController {
 	private Board board;
 	private GameFrame frame;
 	private ArrayList<Piece> pieces;
-	private GameLoop loop;
 	private BoardSpot currentMoveSelection;
 
 	private static GameController instance;
@@ -29,6 +28,8 @@ public class GameController {
 	private Color currentPlayer = Color.RED;
 
 	private boolean singleplayer = false;
+	
+	private MenuPanel menu;
 
 	private GameController() {
 	}
@@ -42,32 +43,32 @@ public class GameController {
 
 	public void start() {
 		frame = new GameFrame();
-		MenuPanel menu = new MenuPanel();
-		frame.add(menu);
+		menu = new MenuPanel();
+		frame.getContentPane().add(menu);
 		frame.pack();
 		frame.setVisible(true);
 	}
-	
+
 	public void playSingleplayer() {
 		singleplayer = true;
+		frame.setCurrentTeamText("It's Your Turn");
 		startGame();
 	}
-	
+
 	public void playMultiplayer() {
 		singleplayer = false;
 		startGame();
 	}
-	
+
 	private void startGame() {
+		frame.getContentPane().remove(menu);
+		frame.getInfoPanel().setVisible(true);
 		pieces = new ArrayList<Piece>();
-		frame.getContentPane().removeAll();
 		board = new Board();
 		frame.add(board);
 		initBoard();
 		frame.pack();
-		frame.setVisible(true);
-		loop = new GameLoop();
-		loop.run();
+		frame.repaint();
 	}
 
 	private void initBoard() {
@@ -116,6 +117,7 @@ public class GameController {
 
 	public void clearBorders() {
 		board.forEachSpot(spot -> spot.removeBorder());
+		update();
 	}
 
 	public void spotSelected(BoardSpot spot) {
@@ -130,6 +132,7 @@ public class GameController {
 		} else if (!spot.hasPiece() && currentMoveSelection != null) {
 			MoveHelper.doMove(currentMoveSelection, spot);
 		}
+		update();
 	}
 
 	public void selectSpot(BoardSpot spot) {
@@ -156,6 +159,7 @@ public class GameController {
 		System.out.println("Red: " + redScore);
 		System.out.println("Black: " + blackScore);
 		checkForEndOfGame();
+		update();
 	}
 
 	private void checkForEndOfGame() {
@@ -200,6 +204,7 @@ public class GameController {
 			CanMoveOnceResult result = (CanMoveOnceResult) move;
 			MoveHelper.doMove(from, result.targetSpot);
 		}
+		update();
 	}
 
 	public void movePiece(BoardSpot to) {
@@ -207,5 +212,10 @@ public class GameController {
 		currentMoveSelection.removePiece();
 		currentMoveSelection = null;
 		clearBorders();
+		update();
+	}
+	
+	public boolean isSingleplayer() {
+		return singleplayer;
 	}
 }
