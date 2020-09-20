@@ -10,7 +10,7 @@ public class MoveHelper {
 
 	/**** Helpers ****/
 	
-	private static boolean canMoveOneSpot(int[] fromLocation, int[] toLocation, Piece piece) {
+	public static boolean canMoveOneSpot(int[] fromLocation, int[] toLocation, Piece piece) {
 		int fromY = fromLocation[0];
 		int toY = toLocation[0];
 		int fromX = fromLocation[1];
@@ -61,7 +61,7 @@ public class MoveHelper {
 		return false;
 	}
 
-	private static CanJumpResult canJump(int[] fromLocation, int[] toLocation, Piece piece) {
+	public static CanJumpResult canJump(int[] fromLocation, int[] toLocation, Piece piece) {
 		CanJumpResult result = new CanJumpResult();
 		result.canJump = false;
 		int fromY = fromLocation[0];

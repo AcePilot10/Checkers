@@ -19,29 +19,31 @@ public class GameFrame extends JFrame {
 
 	private JLabel lblScoreRed, lblScoreBlack;
 	private JLabel lblCurrentTeam;
-	private JPanel panel;
+	private JPanel scorePanel;
+	private JPanel panelInfo;
 
 	public GameFrame() {
 		setSize(Settings.DEFAULT_WIDTH, Settings.DEFAULT_HEIGHT);
 		setTitle("Checkers");
 		getContentPane().setLayout(new BorderLayout());
 
-		JPanel panelInfo = new JPanel();
+		panelInfo = new JPanel();
 		getContentPane().add(panelInfo, BorderLayout.NORTH);
 		panelInfo.setLayout(new BorderLayout(0, 0));
 		
-		panel = new JPanel();
-		panelInfo.add(panel, BorderLayout.EAST);
+		scorePanel = new JPanel();
+		panelInfo.add(scorePanel, BorderLayout.EAST);
 		
 				lblScoreRed = new JLabel("Red: 0");
-				panel.add(lblScoreRed);
+				scorePanel.add(lblScoreRed);
 				lblScoreRed.setHorizontalAlignment(SwingConstants.LEFT);
 
 		lblScoreBlack = new JLabel("Black: 0");
-		panel.add(lblScoreBlack);
+		scorePanel.add(lblScoreBlack);
 		
 		lblCurrentTeam = new JLabel("Current Team: Red");
 		panelInfo.add(lblCurrentTeam, BorderLayout.CENTER);
+		panelInfo.setVisible(false);
 		lblCurrentTeam.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		lblCurrentTeam.setBackground(Color.GRAY);
         setMinimumSize(new Dimension(Settings.DEFAULT_WIDTH, Settings.DEFAULT_HEIGHT));
@@ -63,10 +65,10 @@ public class GameFrame extends JFrame {
 		} else {
 			resultText = "black";
 		}
-		int result = JOptionPane.showConfirmDialog(this,
+		int result = JOptionPane.showOptionDialog(this,
 				resultText + " has won the game! Thanks for playing!",
 				"Game Over!",
-				JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 		if(result == JOptionPane.OK_OPTION) {
 			System.exit(1);
 		}
@@ -83,5 +85,9 @@ public class GameFrame extends JFrame {
 	@Override
 	public Dimension getPreferredSize() {
 		return new Dimension(Settings.DEFAULT_WIDTH, Settings.DEFAULT_HEIGHT);
+	}
+	
+	public JPanel getScorePanel() {
+		return scorePanel;
 	}
 }

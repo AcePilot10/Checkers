@@ -3,10 +3,15 @@ package com.codygordon.checkers;
 import java.awt.Color;
 import java.util.ArrayList;
 
+import com.codygordon.checkers.ai.AIHelper;
+import com.codygordon.checkers.ai.CanMoveOnceResult;
 import com.codygordon.checkers.entities.Piece;
 import com.codygordon.checkers.ui.Board;
 import com.codygordon.checkers.ui.BoardSpot;
 import com.codygordon.checkers.ui.GameFrame;
+import com.codygordon.checkers.ui.MenuPanel;
+import com.codygordon.checkers.util.CanJumpResult;
+import com.codygordon.checkers.util.CanMoveResult;
 import com.codygordon.checkers.util.MoveHelper;
 
 public class GameController {
@@ -23,6 +28,8 @@ public class GameController {
 	private int blackScore = 0;
 	private Color currentPlayer = Color.RED;
 
+	private boolean singleplayer = false;
+
 	private GameController() {
 	}
 
@@ -33,9 +40,27 @@ public class GameController {
 		return instance;
 	}
 
-	public void startGame() {
-		pieces = new ArrayList<Piece>();
+	public void start() {
 		frame = new GameFrame();
+		MenuPanel menu = new MenuPanel();
+		frame.add(menu);
+		frame.pack();
+		frame.setVisible(true);
+	}
+	
+	public void playSingleplayer() {
+		singleplayer = true;
+		startGame();
+	}
+	
+	public void playMultiplayer() {
+		singleplayer = false;
+		startGame();
+	}
+	
+	private void startGame() {
+		pieces = new ArrayList<Piece>();
+		frame.getContentPane().removeAll();
 		board = new Board();
 		frame.add(board);
 		initBoard();
@@ -94,7 +119,6 @@ public class GameController {
 	}
 
 	public void spotSelected(BoardSpot spot) {
-		// TODO check if it's the players team
 		if (spot.hasPiece()) {
 			if (spot.getPiece().getColor() == currentPlayer) {
 				selectSpot(spot);
@@ -153,10 +177,29 @@ public class GameController {
 	public void swapCurrentPlayer() {
 		if (currentPlayer == Color.RED) {
 			currentPlayer = Color.BLACK;
+			if (singleplayer) {
+				doAIMove();
+			}
 		} else {
 			currentPlayer = Color.RED;
 		}
 		frame.updateCurrentTeamText(currentPlayer);
+	}
+
+	public void doAIMove() {
+		if (currentPlayer != Color.BLACK)
+			return;
+
+		CanMoveResult move = AIHelper.findPieceToMove();
+		currentMoveSelection = move.fromSpot;
+		BoardSpot from = move.fromSpot;
+		if (move instanceof CanJumpResult) {
+			CanJumpResult result = (CanJumpResult) move;
+			MoveHelper.doMove(from, result.targetSpot);
+		} else if (move instanceof CanMoveResult) {
+			CanMoveOnceResult result = (CanMoveOnceResult) move;
+			MoveHelper.doMove(from, result.targetSpot);
+		}
 	}
 
 	public void movePiece(BoardSpot to) {
