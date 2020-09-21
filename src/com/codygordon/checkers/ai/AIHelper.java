@@ -34,7 +34,7 @@ public class AIHelper {
 		// if decided not to jump
 		// run x percent chance to decide if the AI should move the farthest piece
 		// if not move random piece once
-		if (!spotsThatCanJump.isEmpty()) {
+		if (spotsThatCanJump.keySet().size() > 1) {
 			int shouldJump = new Random().nextInt(100);
 			if (shouldJump < 90 || spotsThatCanMoveOnce.isEmpty()) {
 				// Do jump and return
@@ -88,73 +88,37 @@ public class AIHelper {
 		BoardSpot jumpedSpot;
 		BoardSpot targetSpot;
 
-		if (!piece.isKinged()) {
-			// look down
-			jumpedY = fromY + 1;
-			targetY = fromY + 2;
-			if (fromY <= 5) {
-				// look left
-				if (fromX >= 2) {
-					jumpedX = fromX - 1;
-					targetX = fromX - 2;
-					jumpedSpot = GameController.getInstance().getBoard().getBoardSpot(jumpedY, jumpedX);
-					targetSpot = GameController.getInstance().getBoard().getBoardSpot(targetY, targetX);
-					if (jumpedSpot.hasPiece() && jumpedSpot.getPiece().getColor() == Color.RED
-							&& !targetSpot.hasPiece()) {
-						// can jump left
-						result.targetSpot = targetSpot;
-						result.canJump = true;
-					}
+		// look down
+		jumpedY = fromY + 1;
+		targetY = fromY + 2;
+		if (fromY <= 5) {
+			// look left
+			if (fromX >= 2) {
+				jumpedX = fromX - 1;
+				targetX = fromX - 2;
+				jumpedSpot = GameController.getInstance().getBoard().getBoardSpot(jumpedY, jumpedX);
+				targetSpot = GameController.getInstance().getBoard().getBoardSpot(targetY, targetX);
+				if (jumpedSpot.hasPiece() && jumpedSpot.getPiece().getColor() == Color.RED && !targetSpot.hasPiece()) {
+					// can jump left
+					result.targetSpot = targetSpot;
+					result.canJump = true;
 				}
+			}
 
-				// look right
-				if (fromX <= 5) {
-					jumpedX = fromX + 1;
-					targetX = fromX + 2;
-					jumpedSpot = GameController.getInstance().getBoard().getBoardSpot(jumpedY, jumpedX);
-					targetSpot = GameController.getInstance().getBoard().getBoardSpot(targetY, targetX);
-					if (jumpedSpot.hasPiece() && jumpedSpot.getPiece().getColor() == Color.RED
-							&& !targetSpot.hasPiece()) {
-						// can jump right
-						result.targetSpot = targetSpot;
-						result.canJump = true;
-					}
+			// look right
+			if (fromX <= 5) {
+				jumpedX = fromX + 1;
+				targetX = fromX + 2;
+				jumpedSpot = GameController.getInstance().getBoard().getBoardSpot(jumpedY, jumpedX);
+				targetSpot = GameController.getInstance().getBoard().getBoardSpot(targetY, targetX);
+				if (jumpedSpot.hasPiece() && jumpedSpot.getPiece().getColor() == Color.RED && !targetSpot.hasPiece()) {
+					// can jump right
+					result.targetSpot = targetSpot;
+					result.canJump = true;
 				}
-
-			} else {
-
-				// look down
-				jumpedY = fromY + 1;
-				targetY = fromY + 2;
-				if (fromY <= 5) {
-					// look left
-					if (fromX >= 2) {
-						jumpedX = fromX - 1;
-						targetX = fromX - 2;
-						jumpedSpot = GameController.getInstance().getBoard().getBoardSpot(jumpedY, jumpedX);
-						targetSpot = GameController.getInstance().getBoard().getBoardSpot(targetY, targetX);
-						if (jumpedSpot.hasPiece() && jumpedSpot.getPiece().getColor() == Color.RED
-								&& !targetSpot.hasPiece()) {
-							// can jump left
-							result.targetSpot = targetSpot;
-							result.canJump = true;
-						}
-					}
-
-					// look right
-					if (fromX <= 5) {
-						jumpedX = fromX + 1;
-						targetX = fromX + 2;
-						jumpedSpot = GameController.getInstance().getBoard().getBoardSpot(jumpedY, jumpedX);
-						targetSpot = GameController.getInstance().getBoard().getBoardSpot(targetY, targetX);
-						if (jumpedSpot.hasPiece() && jumpedSpot.getPiece().getColor() == Color.RED
-								&& !targetSpot.hasPiece()) {
-							// can jump right
-							result.targetSpot = targetSpot;
-							result.canJump = true;
-						}
-					}
-				}
+			}
+			
+			if (piece.isKinged()) {
 
 				// look up
 				jumpedY = fromY - 1;
@@ -234,58 +198,58 @@ public class AIHelper {
 						result.canMove = true;
 					}
 				}
+			}
 
-			} else {
+		} else {
 
-				// look down
-				targetY = fromY + 1;
-				if (fromY <= 5) {
-					// look left
-					if (fromX >= 1) {
-						targetX = fromX - 1;
-						targetSpot = GameController.getInstance().getBoard().getBoardSpot(targetY, targetX);
-						if (!targetSpot.hasPiece()) {
-							// can jump left
-							result.targetSpot = targetSpot;
-							result.canMove = true;
-						}
-					}
-
-					// look right
-					if (fromX <= 6) {
-						targetX = fromX + 1;
-						targetSpot = GameController.getInstance().getBoard().getBoardSpot(targetY, targetX);
-						if (!targetSpot.hasPiece()) {
-							// can jump right
-							result.targetSpot = targetSpot;
-							result.canMove = true;
-						}
+			// look down
+			targetY = fromY + 1;
+			if (fromY <= 5) {
+				// look left
+				if (fromX >= 1) {
+					targetX = fromX - 1;
+					targetSpot = GameController.getInstance().getBoard().getBoardSpot(targetY, targetX);
+					if (!targetSpot.hasPiece()) {
+						// can jump left
+						result.targetSpot = targetSpot;
+						result.canMove = true;
 					}
 				}
 
-				// look up
-				targetY = fromY - 1;
-				if (fromY > 0) {
-					// look left
-					if (fromX >= 1) {
-						targetX = fromX - 1;
-						targetSpot = GameController.getInstance().getBoard().getBoardSpot(targetY, targetX);
-						if (!targetSpot.hasPiece()) {
-							// can jump left
-							result.targetSpot = targetSpot;
-							result.canMove = true;
-						}
+				// look right
+				if (fromX <= 6) {
+					targetX = fromX + 1;
+					targetSpot = GameController.getInstance().getBoard().getBoardSpot(targetY, targetX);
+					if (!targetSpot.hasPiece()) {
+						// can jump right
+						result.targetSpot = targetSpot;
+						result.canMove = true;
 					}
+				}
+			}
 
-					// look right
-					if (fromX <= 6) {
-						targetX = fromX + 1;
-						targetSpot = GameController.getInstance().getBoard().getBoardSpot(targetY, targetX);
-						if (!targetSpot.hasPiece()) {
-							// can jump right
-							result.targetSpot = targetSpot;
-							result.canMove = true;
-						}
+			// look up
+			targetY = fromY - 1;
+			if (fromY >= 1) {
+				// look left
+				if (fromX >= 1) {
+					targetX = fromX - 1;
+					targetSpot = GameController.getInstance().getBoard().getBoardSpot(targetY, targetX);
+					if (!targetSpot.hasPiece()) {
+						// can jump left
+						result.targetSpot = targetSpot;
+						result.canMove = true;
+					}
+				}
+
+				// look right
+				if (fromX <= 6) {
+					targetX = fromX + 1;
+					targetSpot = GameController.getInstance().getBoard().getBoardSpot(targetY, targetX);
+					if (!targetSpot.hasPiece()) {
+						// can jump right
+						result.targetSpot = targetSpot;
+						result.canMove = true;
 					}
 				}
 			}
