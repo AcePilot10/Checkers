@@ -20,7 +20,7 @@ public class GameController {
 	private GameFrame frame;
 	private ArrayList<Piece> pieces;
 	private BoardSpot currentMoveSelection;
-
+	
 	private static GameController instance;
 
 	private int redScore = 0;
@@ -82,7 +82,7 @@ public class GameController {
 				board.getBoardSpot(row, col).setPiece(piece);
 			}
 		}
-
+		
 		// black team
 		for (int row = 0; row <= 2; row++) {
 			for (int col = 0; col < 8; col += 2) {
@@ -158,6 +158,7 @@ public class GameController {
 		System.out.println("Current Score");
 		System.out.println("Red: " + redScore);
 		System.out.println("Black: " + blackScore);
+		
 		checkForEndOfGame();
 		update();
 	}

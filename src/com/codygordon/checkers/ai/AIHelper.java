@@ -34,7 +34,7 @@ public class AIHelper {
 		// if decided not to jump
 		// run x percent chance to decide if the AI should move the farthest piece
 		// if not move random piece once
-		if (spotsThatCanJump.keySet().size() > 1) {
+		if (!spotsThatCanJump.isEmpty()) {
 			int shouldJump = new Random().nextInt(100);
 			if (shouldJump < 90 || spotsThatCanMoveOnce.isEmpty()) {
 				// Do jump and return

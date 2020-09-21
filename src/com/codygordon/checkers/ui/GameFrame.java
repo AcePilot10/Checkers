@@ -66,11 +66,9 @@ public class GameFrame extends JFrame {
 		} else {
 			resultText = "black";
 		}
-		int result = JOptionPane.showOptionDialog(this, resultText + " has won the game! Thanks for playing!",
-				"Game Over!", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-		if (result == JOptionPane.OK_OPTION) {
-			System.exit(1);
-		}
+		JOptionPane.showMessageDialog(this, resultText + " has won the game! Thanks for playing!",
+				"Game Over!", JOptionPane.PLAIN_MESSAGE);
+		System.exit(1);
 	}
 	
 	public void setCurrentTeamText(String text) {
